@@ -509,12 +509,13 @@ function PlayPageClient() {
   // 监听 URL 参数变化，当切换到不同视频时重新加载页面
   useEffect(() => {
     const urlTitle = searchParams.get('title') || '';
+    const reloadParam = searchParams.get('_reload');
 
-    // 只在切换到不同视频时重新加载页面（title变化）
-    // 换源（source/id变化）由播放器自己处理，不需要刷新页面
-    // 如果正在换源，不应该刷新页面
-    if (urlTitle && urlTitle !== videoTitle && !isSourceChangingRef.current) {
-      console.log('[PlayPage] Title changed, reloading page');
+    // 只在有 _reload 参数且标题变化时才重新加载页面
+    // 这样可以避免初始化、API返回、房间同步等场景的误触发
+    // 只有用户主动点击推荐时才会添加 _reload 参数
+    if (reloadParam && urlTitle && urlTitle !== videoTitle && !isSourceChangingRef.current) {
+      console.log('[PlayPage] User clicked recommendation, reloading page');
       window.location.href = window.location.href;
     }
 

@@ -270,16 +270,38 @@ const VideoCard = forwardRef<VideoCardHandle, VideoCardProps>(function VideoCard
       const url = `/live?source=${actualSource.replace('live_', '')}&id=${actualId.replace('live_', '')}`;
       router.push(url);
     } else if (from === 'douban' || from === 'tmdb' || (isAggregate && !actualSource && !actualId)) {
-      const url = `/play?title=${encodeURIComponent(actualTitle.trim())}${actualYear ? `&year=${actualYear}` : ''
+      // 检测当前是否在 play 页面
+      const isCurrentlyOnPlayPage = typeof window !== 'undefined' && window.location.pathname === '/play';
+
+      let url = `/play?title=${encodeURIComponent(actualTitle.trim())}${actualYear ? `&year=${actualYear}` : ''
         }${actualSearchType ? `&stype=${actualSearchType}` : ''}${isAggregate ? '&prefer=true' : ''}${actualQuery ? `&stitle=${encodeURIComponent(actualQuery.trim())}` : ''}`;
-      router.push(url);
+
+      if (isCurrentlyOnPlayPage) {
+        // 在 play 页面内，添加 _reload 参数强制刷新
+        url += `&_reload=${Date.now()}`;
+        window.location.href = url;
+      } else {
+        // 不在 play 页面，正常跳转
+        router.push(url);
+      }
     } else if (actualSource && actualId) {
-      const url = `/play?source=${actualSource}&id=${actualId}&title=${encodeURIComponent(
+      // 检测当前是否在 play 页面
+      const isCurrentlyOnPlayPage = typeof window !== 'undefined' && window.location.pathname === '/play';
+
+      let url = `/play?source=${actualSource}&id=${actualId}&title=${encodeURIComponent(
         actualTitle
       )}${actualYear ? `&year=${actualYear}` : ''}${isAggregate ? '&prefer=true' : ''
         }${actualQuery ? `&stitle=${encodeURIComponent(actualQuery.trim())}` : ''
         }${actualSearchType ? `&stype=${actualSearchType}` : ''}`;
-      router.push(url);
+
+      if (isCurrentlyOnPlayPage) {
+        // 在 play 页面内，添加 _reload 参数强制刷新
+        url += `&_reload=${Date.now()}`;
+        window.location.href = url;
+      } else {
+        // 不在 play 页面，正常跳转
+        router.push(url);
+      }
     }
   }, [
     isUpcoming,
