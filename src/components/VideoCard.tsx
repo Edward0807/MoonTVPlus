@@ -24,10 +24,10 @@ import {
 import { processImageUrl } from '@/lib/utils';
 import { useLongPress } from '@/hooks/useLongPress';
 
-import { ImagePlaceholder } from '@/components/ImagePlaceholder';
-import MobileActionSheet from '@/components/MobileActionSheet';
 import AIChatPanel from '@/components/AIChatPanel';
 import DetailPanel from '@/components/DetailPanel';
+import { ImagePlaceholder } from '@/components/ImagePlaceholder';
+import MobileActionSheet from '@/components/MobileActionSheet';
 
 export interface VideoCardProps {
   id?: string;
@@ -167,6 +167,14 @@ const VideoCard = forwardRef<VideoCardHandle, VideoCardProps>(function VideoCard
   const actualYear = year;
   const actualQuery = query || '';
   const actualSearchType = type;
+  const displayYear = useMemo(() => {
+    if (!actualYear) return '';
+    const normalized = actualYear.trim();
+    if (!normalized || normalized === 'unknown') return '';
+    const digits = normalized.replace(/\D/g, '');
+    if (!digits) return normalized;
+    return digits.slice(-2).padStart(2, '0');
+  }, [actualYear]);
 
   // 获取收藏状态（搜索结果页面不检查）
   useEffect(() => {
@@ -944,7 +952,7 @@ const VideoCard = forwardRef<VideoCardHandle, VideoCardProps>(function VideoCard
               </div>
 
               {/* 年份显示 */}
-              {actualYear && actualYear !== 'unknown' && actualYear.trim() !== '' && (
+              {displayYear && (
                 <div
                   className='bg-black/60 text-white text-[9px] sm:text-xs font-medium px-2 sm:px-3 py-0.5 sm:py-1 rounded-full shadow-md transition-all duration-300 ease-out group-hover:scale-110 backdrop-blur-sm flex items-center justify-center'
                   style={{
@@ -957,7 +965,7 @@ const VideoCard = forwardRef<VideoCardHandle, VideoCardProps>(function VideoCard
                     return false;
                   }}
                 >
-                  {actualYear.slice(-2)}年
+                  {displayYear}年
                 </div>
               )}
             </div>

@@ -11,6 +11,27 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
 	{
+    version: '210.0.0',
+    date: '2026-01-25',
+	added: [
+		"新增网络直播功能",
+		"动漫磁力搜索增加蜜柑",
+		"动漫磁力搜索增加动漫花园",
+		"pansou增加关键词过滤",
+		"cloudflare workers部署支持",
+    ],
+    changed: [
+		"去广告增强",
+		"登录验证机制改为Token+Refresh Token形式",
+		"移除旧版用户操作残留"
+    ],
+    fixed: [
+		"修复缓存弹幕限制后不显示原始数量",
+		"修复测速缓存导致的错误测速数据",
+		"修复videocard，2000年只显示0年"
+	]
+	},
+	{
     version: '209.1.0',
     date: '2026-01-21',
 	added: [

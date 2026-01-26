@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
+import { Settings } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, {
   useCallback,
@@ -8,13 +9,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Settings } from 'lucide-react';
+
+import type { DanmakuComment,DanmakuSelection } from '@/lib/danmaku/types';
+import { EpisodeFilterConfig,SearchResult } from '@/lib/types';
+import { getVideoResolutionFromM3u8, processImageUrl } from '@/lib/utils';
 
 import DanmakuPanel from '@/components/DanmakuPanel';
 import EpisodeFilterSettings from '@/components/EpisodeFilterSettings';
-import type { DanmakuSelection, DanmakuComment } from '@/lib/danmaku/types';
-import { SearchResult, EpisodeFilterConfig } from '@/lib/types';
-import { getVideoResolutionFromM3u8, processImageUrl } from '@/lib/utils';
 
 // 定义视频信息类型
 interface VideoInfo {
