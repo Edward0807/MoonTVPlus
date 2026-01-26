@@ -119,7 +119,7 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create -t ghcr.io/${{ steps.lowercase.outputs.owner }}/moontvplus:${{ github.event.inputs.tag || 'latest' }} \
-            $(printf 'ghcr.io/${{ steps.lowercase.outputs.owner }}/edward_moontvplus@sha256:%s ' *)
+            $(printf 'ghcr.io/${{ steps.lowercase.outputs.owner }}/moontvplus@sha256:%s ' *)
 
   cleanup-refresh:
     runs-on: ubuntu-latest
