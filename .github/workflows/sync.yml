@@ -1,23 +1,19 @@
-name: Auto Sync mtvpls/MoonTVPlus
-
+name: Sync Upstream
 on:
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
-  sync_latest_from_upstream:
+  sync:
     runs-on: ubuntu-latest
-    name: Sync latest commits from upstream repo
+    permissions:
+      contents: write
     steps:
-    - name: Checkout target repo
-      uses: actions/checkout@v4
-    
-    - name: Sync upstream changes
-      uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
-      with:
-        target_sync_branch: main
-        target_repo_token: ${{ secrets.MY_TOKEN }}
-        upstream_sync_branch: main
-        upstream_sync_repo: mtvpls/MoonTVPlus
-        test_mode: false
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Sync with Upstream
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh repo sync ${{ github.repository }} -b main
