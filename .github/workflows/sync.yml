@@ -1,19 +1,25 @@
-name: Sync Upstream
+name: Auto Sync mtvpls/MoonTVPlus
+
 on:
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
-  sync:
+  sync_latest_from_upstream:
     runs-on: ubuntu-latest
+    # 重点：在这里显式开启 workflow 写入权限
     permissions:
       contents: write
+      workflows: write
+
     steps:
-      - name: Checkout
+      - name: Checkout target repo
         uses: actions/checkout@v4
+
       - name: Sync with Upstream
         env:
+          # 使用内置的 GITHUB_TOKEN，它会自动继承上面的 permissions
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh repo sync ${{ github.repository }} -b main
