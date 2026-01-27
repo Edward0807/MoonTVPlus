@@ -11,7 +11,6 @@ jobs:
     # 重点：在这里显式开启 workflow 写入权限
     permissions:
       contents: write
-      workflows: write
 
     steps:
       - name: Checkout target repo
