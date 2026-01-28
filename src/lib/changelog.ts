@@ -11,6 +11,26 @@ export interface ChangelogEntry {
 
 export const changelog: ChangelogEntry[] = [
 	{
+    version: '210.1.2',
+    date: '2026-01-27',
+	added: [
+    ],
+    changed: [
+    ],
+    fixed: [
+		"修复刷新token失效无限重定向"
+	]
+	},{
+    version: '210.1.1',
+    date: '2026-01-27',
+	added: [
+    ],
+    changed: [
+    ],
+    fixed: [
+		"修复token过期重定向无法续期的问题"
+	]
+	},{
     version: '210.1.0',
     date: '2026-01-27',
 	added: [
