@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { fireTVRemoteKey } from '@/lib/tv-remote-core';
 
 const focusableSelector = [
   'a[href]',
@@ -190,44 +191,6 @@ function activateFocused() {
   }
 }
 
-const keys = {
-  up: { key: 'ArrowUp', code: 'ArrowUp', keyCode: 38 },
-  down: { key: 'ArrowDown', code: 'ArrowDown', keyCode: 40 },
-  left: { key: 'ArrowLeft', code: 'ArrowLeft', keyCode: 37 },
-  right: { key: 'ArrowRight', code: 'ArrowRight', keyCode: 39 },
-  ok: { key: 'Enter', code: 'Enter', keyCode: 13 },
-  back: { key: 'Escape', code: 'Escape', keyCode: 27 },
-  menu: { key: 'ContextMenu', code: 'ContextMenu', keyCode: 93 },
-  home: { key: 'Home', code: 'Home', keyCode: 36 },
-};
-
-function fireRemoteKey(name: keyof typeof keys, repeat = false) {
-  const cfg = keys[name];
-  const eventInit: KeyboardEventInit = {
-    key: cfg.key,
-    code: cfg.code,
-    repeat,
-    bubbles: true,
-    cancelable: true,
-  };
-
-  const down = new KeyboardEvent('keydown', eventInit);
-  const up = new KeyboardEvent('keyup', eventInit);
-
-  Object.defineProperty(down, 'keyCode', { get: () => cfg.keyCode });
-  Object.defineProperty(down, 'which', { get: () => cfg.keyCode });
-  Object.defineProperty(up, 'keyCode', { get: () => cfg.keyCode });
-  Object.defineProperty(up, 'which', { get: () => cfg.keyCode });
-
-  document.activeElement?.dispatchEvent(down);
-  window.dispatchEvent(down);
-  document.dispatchEvent(down);
-
-  document.activeElement?.dispatchEvent(up);
-  window.dispatchEvent(up);
-  document.dispatchEvent(up);
-}
-
 function RemoteButton({
   label,
   onClick,
@@ -384,34 +347,34 @@ export default function TVVirtualRemote() {
       </div>
 
       <div className='grid grid-cols-3 gap-3'>
-        <RemoteButton label='返回' onClick={() => fireRemoteKey('back')} className='h-14'>
+        <RemoteButton label='返回' onClick={() => fireTVRemoteKey('back')} className='h-14'>
           <RotateCcw className='h-6 w-6' />
         </RemoteButton>
-        <RemoteButton label='主页' onClick={() => fireRemoteKey('home')} className='h-14'>
+        <RemoteButton label='主页' onClick={() => fireTVRemoteKey('home')} className='h-14'>
           <Home className='h-6 w-6' />
         </RemoteButton>
-        <RemoteButton label='菜单' onClick={() => fireRemoteKey('menu')} className='h-14'>
+        <RemoteButton label='菜单' onClick={() => fireTVRemoteKey('menu')} className='h-14'>
           <Menu className='h-6 w-6' />
         </RemoteButton>
 
         <div />
-        <RemoteButton label='上' onClick={() => fireRemoteKey('up')} onRepeat={() => fireRemoteKey('up', true)} repeatable className='h-16'>
+        <RemoteButton label='上' onClick={() => fireTVRemoteKey('up')} onRepeat={() => fireTVRemoteKey('up', true)} repeatable className='h-16'>
           <ChevronUp className='h-9 w-9' />
         </RemoteButton>
         <div />
 
-        <RemoteButton label='左' onClick={() => fireRemoteKey('left')} onRepeat={() => fireRemoteKey('left', true)} repeatable className='h-16'>
+        <RemoteButton label='左' onClick={() => fireTVRemoteKey('left')} onRepeat={() => fireTVRemoteKey('left', true)} repeatable className='h-16'>
           <ChevronLeft className='h-9 w-9' />
         </RemoteButton>
-        <RemoteButton label='确认' onClick={() => fireRemoteKey('ok')} className='h-16 rounded-full bg-white text-black hover:bg-slate-200'>
+        <RemoteButton label='确认' onClick={() => fireTVRemoteKey('ok')} className='h-16 rounded-full bg-white text-black hover:bg-slate-200'>
           <CornerDownLeft className='h-8 w-8' />
         </RemoteButton>
-        <RemoteButton label='右' onClick={() => fireRemoteKey('right')} onRepeat={() => fireRemoteKey('right', true)} repeatable className='h-16'>
+        <RemoteButton label='右' onClick={() => fireTVRemoteKey('right')} onRepeat={() => fireTVRemoteKey('right', true)} repeatable className='h-16'>
           <ChevronRight className='h-9 w-9' />
         </RemoteButton>
 
         <div />
-        <RemoteButton label='下' onClick={() => fireRemoteKey('down')} onRepeat={() => fireRemoteKey('down', true)} repeatable className='h-16'>
+        <RemoteButton label='下' onClick={() => fireTVRemoteKey('down')} onRepeat={() => fireTVRemoteKey('down', true)} repeatable className='h-16'>
           <ChevronDown className='h-9 w-9' />
         </RemoteButton>
         <div />

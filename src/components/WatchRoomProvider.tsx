@@ -19,6 +19,10 @@ const WATCH_ROOM_SCREEN_PATH = '/watch-room/screen';
 const WATCH_ROOM_NO_CONNECT_TIMESTAMP_KEY = 'watch_room_no_connect_timestamp';
 const WATCH_ROOM_NO_CONNECT_TTL_MS = 10 * 60 * 1000;
 
+function isTVPagePath(pathname: string | null) {
+  return pathname === '/tv' || Boolean(pathname?.startsWith('/tv/'));
+}
+
 interface WatchRoomContextType {
   socket: WatchRoomSocket | null;
   isConnected: boolean;
@@ -143,6 +147,7 @@ export function WatchRoomProvider({ children }: WatchRoomProviderProps) {
       const noConnect = window.localStorage.getItem(WATCH_ROOM_NO_CONNECT_KEY) === '1';
       const lastActiveAt = Number(window.localStorage.getItem(WATCH_ROOM_NO_CONNECT_TIMESTAMP_KEY) || 0);
       const isScreenPage = pathname === WATCH_ROOM_SCREEN_PATH;
+      const isTVPage = isTVPagePath(pathname);
       const isExpired = !lastActiveAt || Date.now() - lastActiveAt > WATCH_ROOM_NO_CONNECT_TTL_MS;
 
       if (noConnect && isExpired) {
@@ -150,7 +155,7 @@ export function WatchRoomProvider({ children }: WatchRoomProviderProps) {
         window.localStorage.removeItem(WATCH_ROOM_NO_CONNECT_TIMESTAMP_KEY);
       }
 
-      setShouldDisableWatchRoomConnection(!isScreenPage && noConnect && !isExpired);
+      setShouldDisableWatchRoomConnection(isTVPage || (!isScreenPage && noConnect && !isExpired));
     };
 
     refreshWatchRoomConnectionState();
@@ -215,6 +220,7 @@ export function WatchRoomProvider({ children }: WatchRoomProviderProps) {
     }
 
     if (shouldDisableWatchRoomConnection) {
+      watchRoom.disconnect();
       setConfig({
         enabled: false,
         serverType: 'internal',

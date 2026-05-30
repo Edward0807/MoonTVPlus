@@ -49,6 +49,7 @@ import { FavoritesPanel } from './FavoritesPanel';
 import { NotificationPanel } from './NotificationPanel';
 import { OfflineDownloadPanel } from './OfflineDownloadPanel';
 import { PersonalCenterPanel } from './PersonalCenterPanel';
+import TVRemotePanel from './tv/TVRemotePanel';
 import { useVersionCheck } from './VersionCheckProvider';
 import { VersionPanel } from './VersionPanel';
 
@@ -76,6 +77,7 @@ export const UserMenu: React.FC = () => {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isDownloadManagementOpen, setIsDownloadManagementOpen] =
     useState(false);
+  const [isTVRemoteOpen, setIsTVRemoteOpen] = useState(false);
   const [authInfo, setAuthInfo] = useState<AuthInfo | null>(null);
   const [storageType, setStorageType] = useState<string>('localstorage');
   const [displayStorageType, setDisplayStorageType] =
@@ -118,7 +120,8 @@ export const UserMenu: React.FC = () => {
       isEcoAppsOpen ||
       isReportOpen ||
       isDownloadManagementOpen ||
-      isTvQrScannerOpen
+      isTvQrScannerOpen ||
+      isTVRemoteOpen
     ) {
       const body = document.body;
       const html = document.documentElement;
@@ -149,6 +152,7 @@ export const UserMenu: React.FC = () => {
     isReportOpen,
     isDownloadManagementOpen,
     isTvQrScannerOpen,
+    isTVRemoteOpen,
   ]);
 
   // 设置相关状态
@@ -4305,11 +4309,14 @@ export const UserMenu: React.FC = () => {
                 </button>
                 <button
                   type='button'
-                  disabled
-                  className='inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-3 text-sm font-bold text-slate-400 dark:border-white/10 dark:bg-slate-900/70 dark:text-slate-500'
+                  onClick={() => {
+                    setIsSubscribeOpen(false);
+                    setIsTVRemoteOpen(true);
+                  }}
+                  className='inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 py-3 text-sm font-black text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500/70 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200'
                 >
                   <Sliders className='h-4 w-4' />
-                  远程电视遥控器（入口保留）
+                  远程电视遥控器
                 </button>
               </div>
 
@@ -4864,6 +4871,12 @@ export const UserMenu: React.FC = () => {
         onRevokeDevice={handleRevokeDevice}
         onRevokeAllDevices={handleRevokeAllDevices}
         getDeviceIcon={getDeviceIcon}
+      />
+
+      <TVRemotePanel
+        isOpen={isTVRemoteOpen}
+        mounted={mounted}
+        onClose={() => setIsTVRemoteOpen(false)}
       />
 
       {/* 使用 Portal 将生态应用面板渲染到 document.body */}
