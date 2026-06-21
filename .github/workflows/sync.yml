@@ -19,6 +19,7 @@ jobs:
       - name: Sync with Upstream
         env:
           # 使用内置的 GITHUB_TOKEN，它会自动继承上面的 permissions
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          gh repo sync ${{ github.repository }} -b main
+          # 显式指定上游仓库地址，避免非 fork 创建的仓库找不到上游
+          gh repo sync ${{ github.repository }} --source mtvpls/MoonTVPlus -b main
