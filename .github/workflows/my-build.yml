@@ -10,6 +10,11 @@ on:
         type: string
   push:
     branches: [ main, master ]
+    # 添加这行：当修改 .github/workflows 里的文件时，忽略本次 Push，不触发构建
+    paths-ignore:
+      - '.github/workflows/**'
+      - 'README.md'
+
   pull_request:
     branches: [ main, master ]
 
