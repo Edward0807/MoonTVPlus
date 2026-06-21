@@ -9,7 +9,11 @@ on:
         default: 'latest'
         type: string
   push:
-    branches: [ main ]
+    branches: [ main, master ]
+    # 添加这行：当修改 .github/workflows 里的文件时，忽略本次 Push，不触发构建
+    paths-ignore:
+      - '.github/workflows/**'
+      - 'README.md'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
