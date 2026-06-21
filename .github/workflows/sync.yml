@@ -8,18 +8,44 @@ on:
 jobs:
   sync_latest_from_upstream:
     runs-on: ubuntu-latest
-    # 重点：在这里显式开启 workflow 写入权限
     permissions:
       contents: write
 
     steps:
       - name: Checkout target repo
         uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 非常重要，它会拉取完整的历史记录以便 Git 进行合并比对
+          fetch-depth: 0 
+          token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Sync with Upstream
-        env:
-          # 使用内置的 GITHUB_TOKEN，它会自动继承上面的 permissions
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+      - name: Configure Git
         run: |
-          # 显式指定上游仓库地址，避免非 fork 创建的仓库找不到上游
-          gh repo sync ${{ github.repository }} --source mtvpls/MoonTVPlus -b main
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Sync and Merge with Upstream
+        run: |
+          # 1. 添加上游仓库地址
+          git remote add upstream https://github.com/mtvpls/MoonTVPlus.git
+          
+          # 2. 获取上游最新代码
+          git fetch upstream
+          
+          # 3. 尝试合并上游的 main 分支到本地的 main 分支
+          # 如果没有冲突，合并会自动完成
+          git merge upstream/main --no-edit || {
+            echo "检测到代码冲突！开始执行本地文件保护策略..."
+            
+            # 如果 .github/workflows 目录发生冲突，强制保留你本地（--ours）的修改
+            git checkout --ours .github/workflows/
+            git add .github/workflows/
+            
+            # 提交解决冲突后的结果
+            git commit -m "Auto sync from upstream and keep local workflows"
+          }
+
+      - name: Push to Origin
+        run: |
+          # 将合并后的代码推送到你的 GitHub 仓库
+          git push origin main
